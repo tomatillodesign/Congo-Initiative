@@ -1,18 +1,80 @@
 
-
 /* CLB CSS EDITS ------------------ */
 
 /* Fonts --- */
-h1, h2, h3, h4, h5, h6, .entry-meta, .entry-header, .site-header .genesis-nav-menu a {
-  	font-family: "ff-meta-serif-web-pro",serif;
-  	font-weight: 400;
+h1, h2, h3, h4, h5, h6, .entry-meta, .entry-header, .site-header .genesis-nav-menu a, .button {
+  	/*font-family: "ff-meta-serif-web-pro",serif; */
+	font-family: 'Roboto', sans-serif;
+  	font-weight: 500;
 }
 
 body {
-	font-family: "ff-meta-serif-web-pro",serif;
+	/*font-family: "ff-meta-serif-web-pro",serif; */
+	font-family: 'Droid Serif', serif;
 }
 
 /* END Fonts --- */
+
+/* Custom Blog Layout --- */
+
+.entry {
+	padding: 0px;
+	padding-top: 50px;
+	position: relative;
+}
+
+.entry-title {
+	padding: 40px 40px 0px 40px;	
+}
+
+.content .entry-header .entry-meta {
+	position: absolute;
+	top: 15px;
+	right: 40px;
+	width: 100%;
+	margin-bottom: 0;
+	text-align: right;
+	z-index: 100;
+}
+
+.entry-header {
+	margin-top: -50px;
+	position: relative
+}
+
+.entry-title a {
+	color: #fff;
+	text-shadow: 0px 0px 20px #333;
+	position: absolute;
+	bottom: 60px;
+	padding-bottom: 10px;
+}
+
+.entry-title a:hover {
+	color: #fff;
+}
+
+.entry-content {
+	padding: 0px 40px;
+	margin-top: -40px;
+}
+
+.entry-header img:hover {
+	opacity: .8;
+	transition: all 0.5s ease;
+}
+
+.entry-footer {
+	background: #fafafa;
+	padding: 20px 40px;
+	margin: 0px 0px 0px;
+}
+
+.single-post .entry-content, .type-page .entry-content {
+	margin-top: 0px;
+}
+
+/* END Custom Blog Layout --- */
 
 .highlight {
 	background-color: #E97512;
@@ -147,7 +209,7 @@ hr:before {
 }
 
 .entry-title {
-  font-size: 30px;
+  font-size: 36px;
   margin-bottom: 20px;
 }
 
@@ -198,6 +260,11 @@ hr:before {
 
 .soliloquy-container, .soliloquy-container * {
 	line-height: 1.625 !important;
+}
+
+.footer-widgets li {
+	list-style-type: square;
+	margin-left: 20px;
 }
 
 /* 

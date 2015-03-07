@@ -166,3 +166,24 @@ function sk_home_featured() {
 		) );
 	}
 }
+
+//CLB Edits
+
+// Move image above post title in Genesis Framework
+remove_action( 'genesis_entry_content', 'genesis_do_post_image', 8);
+add_action( 'genesis_entry_header', 'genesis_do_post_image', 8 );
+
+//* Modify the length of post excerpts
+add_filter( 'excerpt_length', 'sp_excerpt_length' );
+function sp_excerpt_length( $length ) {
+	return 25; // pull first 25 words
+}
+
+// Add Read More Link to Excerpts
+add_filter('excerpt_more', 'get_read_more_link');
+add_filter( 'the_content_more_link', 'get_read_more_link' );
+
+	function get_read_more_link() {
+	   return '...&nbsp;<a href="' . get_permalink() . '"> Continue Reading &#x2192;</a>';
+	}
+
