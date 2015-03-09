@@ -338,14 +338,13 @@ class Soliloquy_Shortcode {
      * @param int|string $id The ID for the slide.
      * @param array $item    Array of data for the slide.
      * @param array $data    Array of data for the slider.
-     * @param int $i         The number of the slide in the slider.
+     * @param int $i         The number of the slide in the slider (starts at 1)
      * @return string        HTML markup for the image slide.
      */
     public function get_image_slide( $id, $item, $data, $i ) {
 
         // Grab our image src and prepare our output.
-        $type = ( $this->is_mobile() ? 'mobile' : 'slider' );
-        $imagesrc = $this->get_image_src( $id, $item, $data, $type);
+        $imagesrc = $this->get_image_src( $id, $item, $data );
         $output   = '';
         
         // If our image is linked, link it.
@@ -359,8 +358,13 @@ class Soliloquy_Shortcode {
         }
 
         if ( ! empty( $imagesrc ) ) {
+            $disable_preloading = apply_filters( 'soliloquy_disable_preloading', false, $data );
             $output  = apply_filters( 'soliloquy_output_before_image', $output, $id, $item, $data, $i );
-            $output .= '<img id="soliloquy-image-' . sanitize_html_class( $id ) . '" class="' . $this->get_slider_item_image_classes( $item, $i, $data ) . '" src="' . esc_url( $imagesrc ) . '"' . ( $this->get_config( 'dimensions', $data ) ? ' width="' . $this->get_config( 'slider_width', $data ) . '" height="' . $this->get_config( 'slider_height', $data ) . '"' : '' ) . ' alt="' . esc_attr( $item['alt'] ) . '"' . apply_filters( 'soliloquy_output_image_attr', '', $id, $item, $data, $i ) . ' />';
+            if ( 1 === $i && ! $this->is_mobile() || $disable_preloading === true ) {
+                $output .= '<img id="soliloquy-image-' . sanitize_html_class( $id ) . '" class="' . $this->get_slider_item_image_classes( $item, $i, $data ) . '" src="' . esc_url( $imagesrc ) . '" alt="' . esc_attr( $item['alt'] ) . '"' . apply_filters( 'soliloquy_output_image_attr', '', $id, $item, $data, $i ) . ' />';
+            } else {
+                $output .= '<img id="soliloquy-image-' . sanitize_html_class( $id ) . '" class="' . $this->get_slider_item_image_classes( $item, $i, $data, true ) . '" src="' . esc_url( plugins_url( 'assets/css/images/holder.gif', dirname( dirname( __FILE__ ) ) ) ) . '" data-soliloquy-src="' . esc_url( $imagesrc ) . '" alt="' . esc_attr( $item['alt'] ) . '"' . apply_filters( 'soliloquy_output_image_attr', '', $id, $item, $data, $i ) . ' />';
+            }
             $output  = apply_filters( 'soliloquy_output_after_image', $output, $id, $item, $data, $i );
         }
 
@@ -400,8 +404,8 @@ class Soliloquy_Shortcode {
     public function get_video_slide( $id, $item, $data, $i ) {
 
         // Grab our image src, video type and video ID.
-        $type = ( $this->is_mobile() ? 'mobile' : 'slider' );
-        $imagesrc = $this->get_image_src( $id, $item, $data, $type );
+        // $type = ( $this->is_mobile() ? 'mobile' : 'slider' );
+        $imagesrc = $this->get_image_src( $id, $item, $data );
         $vid_type = $this->get_video_data( $id, $item, $data, 'type' );
         $vid_id   = $this->get_video_data( $id, $item, $data );
         $output   = '';
@@ -417,7 +421,11 @@ class Soliloquy_Shortcode {
         $output .= '<a href="#" class="soliloquy-video-link" title="' . esc_attr( $item['title'] ) . '"' . apply_filters( 'soliloquy_output_link_attr', '', $id, $item, $data, $i ) . '>';
 
             $output  = apply_filters( 'soliloquy_output_before_video', $output, $id, $item, $data, $i );
-            $output .= '<img id="soliloquy-video-' . sanitize_html_class( $id ) . '" class="' . $this->get_slider_item_video_classes( $item, $i, $data, $vid_type ) . '" src="' . esc_url( $imagesrc ) . '"' . ( $this->get_config( 'dimensions', $data ) ? ' width="' . $this->get_config( 'slider_width', $data ) . '" height="' . $this->get_config( 'slider_height', $data ) . '"' : '' ) . ' alt="' . esc_attr( $item['title'] ) . '"' . apply_filters( 'soliloquy_output_image_attr', '', $id, $item, $data, $i ) . ' />';
+            if ( 1 === $i && ! $this->is_mobile() ) {
+                $output .= '<img id="soliloquy-video-' . sanitize_html_class( $id ) . '" class="' . $this->get_slider_item_video_classes( $item, $i, $data, $vid_type ) . '" src="' . esc_url( $imagesrc ) . '" alt="' . esc_attr( $item['title'] ) . '"' . apply_filters( 'soliloquy_output_image_attr', '', $id, $item, $data, $i ) . ' />';
+            } else {
+                $output .= '<img id="soliloquy-video-' . sanitize_html_class( $id ) . '" class="' . $this->get_slider_item_video_classes( $item, $i, $data, $vid_type, true ) . '" src="' . esc_url( plugins_url( 'assets/css/images/holder.gif', dirname( dirname( __FILE__ ) ) ) ) . '" data-soliloquy-src="' . esc_url( $imagesrc ) . '" alt="' . esc_attr( $item['title'] ) . '"' . apply_filters( 'soliloquy_output_image_attr', '', $id, $item, $data, $i ) . ' />';
+            }
             $output .= '<span class="soliloquy-video-icon soliloquy-' . $vid_type . '-video" data-soliloquy-video-type="' . $vid_type . '" data-soliloquy-video-id="' . $vid_id . '" data-soliloquy-video-holder="' . sanitize_html_class( $id ) . '"></span>';
             $output .= '<div id="' . sanitize_html_class( $id ) . '-holder" class="soliloquy-video-holder" data-soliloquy-slider-id="' . $data['id'] . '"></div>';
             $output  = apply_filters( 'soliloquy_output_after_video', $output, $id, $item, $data, $i );
@@ -611,6 +619,25 @@ class Soliloquy_Shortcode {
                     var soliloquy_container_<?php echo $data['id']; ?> = $('#soliloquy-container-<?php echo $data['id']; ?>'),
                         soliloquy_<?php echo $data['id']; ?> = $('#soliloquy-<?php echo $data['id']; ?>'),
                         soliloquy_holder_<?php echo $data['id']; ?> = $('#soliloquy-<?php echo $data['id']; ?>').find('.soliloquy-preload');
+
+                    if ( 0 !== soliloquy_holder_<?php echo $data['id']; ?>.length ) {
+                        <?php if ( $this->get_config( 'mobile', $data ) ) : ?>
+                        var soliloquy_mobile = soliloquyIsMobile(),
+                        soliloquy_src_attr   = soliloquy_mobile ? 'data-soliloquy-src-mobile' : 'data-soliloquy-src';
+                        <?php else : ?>
+                        var soliloquy_src_attr = 'data-soliloquy-src';
+                        <?php endif; ?>
+                        soliloquy_holder_<?php echo $data['id']; ?>.each(function() {
+                            var soliloquy_src = $(this).attr(soliloquy_src_attr);
+                            if ( typeof soliloquy_src === 'undefined' || false === soliloquy_src ) {
+                                return;
+                            }
+
+                            var soliloquy_image = new Image();
+                            soliloquy_image.src = soliloquy_src;
+                            $(this).attr('src', soliloquy_src).removeAttr(soliloquy_src_attr);
+                        });
+                    }
 
                     <?php do_action( 'soliloquy_api_preload', $data ); ?>
 
